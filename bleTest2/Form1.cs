@@ -67,6 +67,7 @@ namespace bleTest2
             {
                 if (device == null)
                 {
+                    
                     Thread.Sleep(500);
                 }
                 else
@@ -93,6 +94,9 @@ namespace bleTest2
                 }
             }*/
             /*deviceWatcher.Stop();*/
+
+
+
         }
 
         private static void DeviceWatcher_Stopped(DeviceWatcher sender, object args)
@@ -143,10 +147,6 @@ namespace bleTest2
             /*items.Clear();*/
         }
 
-        private void updateRst()
-        {
-            listRec.DataSource = items;
-        }
 
         private void listRec_MouseClick(object sender, MouseEventArgs e)
         {
@@ -185,8 +185,7 @@ namespace bleTest2
                             if (properties.HasFlag(GattCharacteristicProperties.Notify))
                             {
                                 Console.WriteLine("Notify property found");
-                                GattCommunicationStatus status = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
-                        GattClientCharacteristicConfigurationDescriptorValue.Notify);
+                                GattCommunicationStatus status = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
                                 if (status == GattCommunicationStatus.Success)
                                 {
                                     characteristic.ValueChanged += Characteristic_ValueChanged;
@@ -199,17 +198,25 @@ namespace bleTest2
                                 var writer = new DataWriter();
                                 writer.WriteBytes(new byte[] { 0xCC });
                                 writer.WriteBytes(new byte[] { 10 });
-                                /*writer.WriteBytes(new byte[] { 0x4D, 0x4F, 0x52, 0x52 });
-                                writer.WriteBytes(new byte[] { 10 });*/
+                                writer.WriteBytes(new byte[] { 0x4D, 0x4F, 0x52, 0x52 });
+                                writer.WriteBytes(new byte[] { 10 });
                                 Console.WriteLine($"\t\t [{characteristic.Uuid}] write property found!!");
-                                if (characteristic.Uuid.ToString() == "6e400002-b5a3-f393-e0a9-e50e24dcc")
-                                {
-                                    GattCommunicationStatus statusWrite = await characteristic.WriteValueAsync(writer.DetachBuffer());
-                                    if (statusWrite == GattCommunicationStatus.Success)
-                                    {
-                                        // Successfully wrote to device
-                                        Console.WriteLine("Write !!!!!!");
 
+                                if (!string.IsNullOrWhiteSpace(characteristic.Uuid.ToString()))
+                                {
+                                    string[] str_split = characteristic.Uuid.ToString().Split(new char[] { '-' });
+                                    int len = str_split[0].Length;
+                                    string chkCode = str_split[0].Substring(len - 2, 2);
+
+                                    if (chkCode == "02")
+                                    {
+                                        GattCommunicationStatus statusWrite = await characteristic.WriteValueAsync(writer.DetachBuffer());
+                                        if (statusWrite == GattCommunicationStatus.Success)
+                                        {
+                                            // Successfully wrote to device
+                                            Console.WriteLine("Write !!!!!!");
+
+                                        }
                                     }
                                 }
 
