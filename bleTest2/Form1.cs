@@ -20,11 +20,11 @@ namespace bleTest2
     {
         static DeviceInformation device = null;
         static public List<string> items = new List<string>();
-        private object selectedCharacteristic;
 
         public delegate void update_rst();
 
-        
+        public Guid actUuid;
+        public GattCharacteristic actGattCharacteristic;
 
         public Form1()
         {
@@ -148,15 +148,12 @@ namespace bleTest2
         }
 
 
-        private void listRec_MouseClick(object sender, MouseEventArgs e)
-        {
-            Console.WriteLine(sender.ToString());
-        }
+ 
 
         private async void listRec_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            Console.WriteLine($"데이터 : {listRec.SelectedIndex}");
-            Console.WriteLine($"데이터 : {listRec.SelectedItem}");
+            /*Console.WriteLine($"데이터 : {listRec.SelectedIndex}");
+            Console.WriteLine($"데이터 : {listRec.SelectedItem}");*/
             int idx = listRec.SelectedIndex;
             string itm = listRec.SelectedItem.ToString();
 
@@ -197,9 +194,9 @@ namespace bleTest2
 
                                 var writer = new DataWriter();
                                 writer.WriteBytes(new byte[] { 0xCC });
-                                writer.WriteBytes(new byte[] { 10 });
-                                writer.WriteBytes(new byte[] { 0x4D, 0x4F, 0x52, 0x52 });
-                                writer.WriteBytes(new byte[] { 10 });
+                                /*writer.WriteBytes(new byte[] { 10 });*/
+                                /*writer.WriteBytes(new byte[] { 0x4D, 0x4F, 0x52, 0x52 });*/
+                                /*writer.WriteBytes(new byte[] { 10 });*/
                                 Console.WriteLine($"\t\t [{characteristic.Uuid}] write property found!!");
 
                                 if (!string.IsNullOrWhiteSpace(characteristic.Uuid.ToString()))
@@ -214,6 +211,8 @@ namespace bleTest2
                                         if (statusWrite == GattCommunicationStatus.Success)
                                         {
                                             // Successfully wrote to device
+                                            actGattCharacteristic = characteristic;
+                                            actUuid = characteristic.Uuid;
                                             Console.WriteLine("Write !!!!!!");
 
                                         }
@@ -244,7 +243,7 @@ namespace bleTest2
             var reader = DataReader.FromBuffer(args.CharacteristicValue);
             var value = reader.ReadByte();
             var hex = ToHex(value);
-            Console.WriteLine($"{hex}");
+            Console.WriteLine($"리턴데이터 : {hex}");
         }
 
         private void btnClear_Click(object sender, EventArgs e)
@@ -264,5 +263,43 @@ namespace bleTest2
             return hex; 
         }
 
+        private async void btnMeasure_Click(object sender, EventArgs e)
+        {
+            int idx = listRec.SelectedIndex;
+            string itm = listRec.SelectedItem.ToString();
+
+            Console.WriteLine($"idx : {idx} 아이템 : {itm} ");
+            GattCharacteristicProperties properties = actGattCharacteristic.CharacteristicProperties;
+            if (properties.HasFlag(GattCharacteristicProperties.Write))
+            {
+                // This characteristic supports writing to it.
+                var writer = new DataWriter();
+                writer.WriteBytes(new byte[] { 0x4D, 0x4F, 0x52, 0x52 });
+                /*writer.WriteBytes(new byte[] { 10 });*/
+                Console.WriteLine($"\t\t [{actGattCharacteristic.Uuid}] write22 property found!!");
+
+                if (!string.IsNullOrWhiteSpace(actGattCharacteristic.Uuid.ToString()))
+                {
+                    string[] str_split = actGattCharacteristic.Uuid.ToString().Split(new char[] { '-' });
+                    int len = str_split[0].Length;
+                    string chkCode = str_split[0].Substring(len - 2, 2);
+
+                    if (chkCode == "02")
+                    {
+                        GattCommunicationStatus statusWrite = await actGattCharacteristic.WriteValueAsync(writer.DetachBuffer());
+                        if (statusWrite == GattCommunicationStatus.Success)
+                        {
+                            // Successfully wrote to device                            
+                            Console.WriteLine("Write22 !!!!!!");
+
+                        }
+                    }
+                }
+
+
+            }
+
+
+        }
     }
 }

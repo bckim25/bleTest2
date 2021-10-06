@@ -34,6 +34,7 @@ namespace bleTest2
             this.listRec = new System.Windows.Forms.ListBox();
             this.btnClear = new System.Windows.Forms.Button();
             this.txtReceive = new System.Windows.Forms.TextBox();
+            this.btnMeasure = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnScan
@@ -87,11 +88,22 @@ namespace bleTest2
             this.txtReceive.Size = new System.Drawing.Size(292, 240);
             this.txtReceive.TabIndex = 2;
             // 
+            // btnMeasure
+            // 
+            this.btnMeasure.Location = new System.Drawing.Point(336, 304);
+            this.btnMeasure.Name = "btnMeasure";
+            this.btnMeasure.Size = new System.Drawing.Size(75, 23);
+            this.btnMeasure.TabIndex = 3;
+            this.btnMeasure.Text = "measure";
+            this.btnMeasure.UseVisualStyleBackColor = true;
+            this.btnMeasure.Click += new System.EventHandler(this.btnMeasure_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(700, 360);
+            this.Controls.Add(this.btnMeasure);
             this.Controls.Add(this.txtReceive);
             this.Controls.Add(this.listRec);
             this.Controls.Add(this.btnClear);
@@ -113,6 +125,7 @@ namespace bleTest2
         private System.Windows.Forms.ListBox listRec;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.TextBox txtReceive;
+        private System.Windows.Forms.Button btnMeasure;
     }
 }
 
