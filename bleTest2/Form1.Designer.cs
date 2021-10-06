@@ -64,6 +64,7 @@ namespace bleTest2
             this.listRec.Name = "listRec";
             this.listRec.Size = new System.Drawing.Size(655, 244);
             this.listRec.TabIndex = 1;
+            this.listRec.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listRec_MouseDoubleClick);
             // 
             // Form1
             // 

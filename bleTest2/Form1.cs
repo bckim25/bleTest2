@@ -20,7 +20,7 @@ namespace bleTest2
         static DeviceInformation device = null;
         static public List<string> items = new List<string>();
 
-        public delegate int updateDelegate();
+        public delegate void update_rst();
 
         
 
@@ -58,7 +58,7 @@ namespace bleTest2
 
             // Start the watcher.
             deviceWatcher.Start();
-            while (true)
+/*            while (true)
             {
                 if (device == null)
                 {
@@ -85,8 +85,7 @@ namespace bleTest2
                     Console.ReadKey();
                     break;
                 }
-
-            }
+            }*/
 
         }
 
@@ -112,17 +111,18 @@ namespace bleTest2
 
         private static void DeviceWatcher_Added(DeviceWatcher sender, DeviceInformation args)
         {
+            update_rst my_update_rst;
 
-
-            if (args.Name == "Nugawinder")
+            if (args.Name != "")
             {
                 Console.WriteLine(args.Name);
                 device = args;
                 Console.WriteLine("id : " + args.Id);
                 items.Add(args.Name);
 
+                /*my_update_rst = updateRst;*/
             }
-
+            
             //throw new NotImplementedException();
         }
 
@@ -141,6 +141,27 @@ namespace bleTest2
 
         }
 
+        private void updateRst()
+        {
+            listRec.DataSource = items;
+        }
 
+        private void listRec_MouseClick(object sender, MouseEventArgs e)
+        {
+            Console.WriteLine(sender.ToString());
+        }
+
+        private void listRec_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            Console.WriteLine(listRec.SelectedIndex);
+            Console.WriteLine(listRec.SelectedItem);
+            int idx = listRec.SelectedIndex;
+            string itm = listRec.SelectedItem.ToString();
+
+
+
+
+
+        }
     }
 }
