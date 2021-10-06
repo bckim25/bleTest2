@@ -12,6 +12,7 @@ using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
 using System.Windows.Threading;
+using Windows.Storage.Streams;
 
 namespace bleTest2
 {
@@ -19,6 +20,7 @@ namespace bleTest2
     {
         static DeviceInformation device = null;
         static public List<string> items = new List<string>();
+        private object selectedCharacteristic;
 
         public delegate void update_rst();
 
@@ -29,6 +31,9 @@ namespace bleTest2
             InitializeComponent();
             
         }
+
+
+
 
         private void btnScan_Click(object sender, EventArgs e)
         {
@@ -87,7 +92,7 @@ namespace bleTest2
                     break;
                 }
             }*/
-
+            /*deviceWatcher.Stop();*/
         }
 
         private static void DeviceWatcher_Stopped(DeviceWatcher sender, object args)
@@ -114,6 +119,7 @@ namespace bleTest2
         {
             update_rst my_update_rst;
 
+
             if (args.Name == "Nugawinder")
             {
                 Console.WriteLine("장치 명 : " + args.Name);
@@ -134,7 +140,7 @@ namespace bleTest2
             {
                 /*listRec.Items = items[i];*/
             }
-
+            /*items.Clear();*/
         }
 
         private void updateRst()
@@ -149,8 +155,8 @@ namespace bleTest2
 
         private async void listRec_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            Console.WriteLine(listRec.SelectedIndex);
-            Console.WriteLine(listRec.SelectedItem);
+            Console.WriteLine($"데이터 : {listRec.SelectedIndex}");
+            Console.WriteLine($"데이터 : {listRec.SelectedItem}");
             int idx = listRec.SelectedIndex;
             string itm = listRec.SelectedItem.ToString();
 
@@ -160,24 +166,96 @@ namespace bleTest2
             if(result.Status == GattCommunicationStatus.Success)
             {
                 var services = result.Services;
-                MessageBox.Show("Pairing succeeded");
+                
                 foreach(var service in services)
                 {
-                    Console.WriteLine(service.Uuid);
+                    Console.WriteLine($"{service.Uuid}");
+                    Console.WriteLine("→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→");
+                    GattCharacteristicsResult cResult = await service.GetCharacteristicsAsync();
+
+                    if (cResult.Status == GattCommunicationStatus.Success)
+                    {
+                        var characteristics = cResult.Characteristics;
+                        foreach(var characteristic in characteristics)
+                        {
+                            
+                            Console.WriteLine($"\t{characteristic.Uuid}");
+
+                            GattCharacteristicProperties properties = characteristic.CharacteristicProperties;
+                            if (properties.HasFlag(GattCharacteristicProperties.Notify))
+                            {
+                                Console.WriteLine("Notify property found");
+                                GattCommunicationStatus status = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                        GattClientCharacteristicConfigurationDescriptorValue.Notify);
+                                if (status == GattCommunicationStatus.Success)
+                                {
+                                    characteristic.ValueChanged += Characteristic_ValueChanged;
+                                    // Server has been informed of clients interest.
+                                }
+                            }else if (properties.HasFlag(GattCharacteristicProperties.Write))
+                            {
+                                
+
+                                var writer = new DataWriter();
+                                writer.WriteBytes(new byte[] { 0xCC });
+                                writer.WriteBytes(new byte[] { 10 });
+                                /*writer.WriteBytes(new byte[] { 0x4D, 0x4F, 0x52, 0x52 });
+                                writer.WriteBytes(new byte[] { 10 });*/
+                                Console.WriteLine($"\t\t [{characteristic.Uuid}] write property found!!");
+                                if (characteristic.Uuid.ToString() == "6e400002-b5a3-f393-e0a9-e50e24dcc")
+                                {
+                                    GattCommunicationStatus statusWrite = await characteristic.WriteValueAsync(writer.DetachBuffer());
+                                    if (statusWrite == GattCommunicationStatus.Success)
+                                    {
+                                        // Successfully wrote to device
+                                        Console.WriteLine("Write !!!!!!");
+
+                                    }
+                                }
+
+                            }
+                            else if (properties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse))
+                            {
+                                Console.WriteLine($"\t\t [{characteristic.Uuid} ] WriteWithoutResponse property found");
+
+                            }
+                        }
+                    }
                 }
-
-
+                MessageBox.Show("Pairing Success!!");
             }
             else
             {
+                MessageBox.Show("Pairing fail!!!");
                 Console.WriteLine("Pairing fail");
             }
 
         }
 
+        private void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            var reader = DataReader.FromBuffer(args.CharacteristicValue);
+            var value = reader.ReadByte();
+            var hex = ToHex(value);
+            Console.WriteLine($"{hex}");
+        }
+
         private void btnClear_Click(object sender, EventArgs e)
         {
+            listRec.DataSource = null;
             listRec.Items.Clear();
         }
+
+        public string ToHex(int i)
+        { // 대문자 X일 경우 결과 hex값이 대문자로 나온다.
+          //
+          string hex = i.ToString("x");
+          if (hex.Length % 2 != 0) 
+            { 
+                hex = "0" + hex; 
+            } 
+            return hex; 
+        }
+
     }
 }
