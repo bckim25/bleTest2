@@ -58,7 +58,7 @@ namespace bleTest2
 
             // Start the watcher.
             deviceWatcher.Start();
-/*            while (true)
+            /*while (true)
             {
                 if (device == null)
                 {
@@ -70,6 +70,7 @@ namespace bleTest2
                     Console.ReadKey();
                     BluetoothLEDevice bluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(device.Id);
                     Console.WriteLine("Attempting to pair with device");
+                    Console.WriteLine("장치 아이디 확인 : " + device.Id);
                     GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync();
 
                     if (result.Status == GattCommunicationStatus.Success)
@@ -113,22 +114,17 @@ namespace bleTest2
         {
             update_rst my_update_rst;
 
-            if (args.Name != "")
+            if (args.Name == "Nugawinder")
             {
-                Console.WriteLine(args.Name);
+                Console.WriteLine("장치 명 : " + args.Name);
                 device = args;
-                Console.WriteLine("id : " + args.Id);
-                items.Add(args.Name);
-
+                Console.WriteLine("장치 id : " + args.Id);
+                /*items.Add(args.Name+"("+args.Id+")");*/
+                items.Add(args.Id);
                 /*my_update_rst = updateRst;*/
             }
             
             //throw new NotImplementedException();
-        }
-
-        private void updateDeviceList()
-        {
-            /*listRec.DataSource = items;*/
         }
 
         private void btnRst_Click(object sender, EventArgs e)
@@ -151,17 +147,37 @@ namespace bleTest2
             Console.WriteLine(sender.ToString());
         }
 
-        private void listRec_MouseDoubleClick(object sender, MouseEventArgs e)
+        private async void listRec_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Console.WriteLine(listRec.SelectedIndex);
             Console.WriteLine(listRec.SelectedItem);
             int idx = listRec.SelectedIndex;
             string itm = listRec.SelectedItem.ToString();
 
+            BluetoothLEDevice bluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(itm);
+            GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync();
+
+            if(result.Status == GattCommunicationStatus.Success)
+            {
+                var services = result.Services;
+                MessageBox.Show("Pairing succeeded");
+                foreach(var service in services)
+                {
+                    Console.WriteLine(service.Uuid);
+                }
 
 
+            }
+            else
+            {
+                Console.WriteLine("Pairing fail");
+            }
 
+        }
 
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            listRec.Items.Clear();
         }
     }
 }
