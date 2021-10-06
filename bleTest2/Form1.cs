@@ -238,13 +238,40 @@ namespace bleTest2
 
         }
 
-        private void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
+
+        private async void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
             var reader = DataReader.FromBuffer(args.CharacteristicValue);
-            var value = reader.ReadByte();
-            var hex = ToHex(value);
-            Console.WriteLine($"리턴데이터 : {hex}");
+            byte[] buff = new byte[reader.UnconsumedBufferLength];
+            reader.ReadBytes(buff);
+            Console.WriteLine($"byte size : {buff.Length}");
+
+            var readTask = Task.Run(() =>
+            {
+                string hex = BitConverter.ToString(buff).Replace("-", " ") + " ";
+                Console.WriteLine(string.Format("hex code : {0}", hex));
+            });
+            await readTask;
+            setText(BitConverter.ToString(buff).Replace("-", " ") + " ");
+
         }
+
+        private void setText(String text)
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new EventHandler(delegate {
+                    if (text != null) txbRXHex.AppendText(text);
+                    
+                }));
+            }
+            else
+            {
+                if (text != null) txbRXHex.AppendText(text);
+
+            }
+        }
+
 
         private void btnClear_Click(object sender, EventArgs e)
         {

@@ -33,7 +33,7 @@ namespace bleTest2
             this.btnRst = new System.Windows.Forms.Button();
             this.listRec = new System.Windows.Forms.ListBox();
             this.btnClear = new System.Windows.Forms.Button();
-            this.txtReceive = new System.Windows.Forms.TextBox();
+            this.txbRXHex = new System.Windows.Forms.TextBox();
             this.btnMeasure = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -80,13 +80,13 @@ namespace bleTest2
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
-            // txtReceive
+            // txbRXHex
             // 
-            this.txtReceive.Location = new System.Drawing.Point(388, 19);
-            this.txtReceive.Multiline = true;
-            this.txtReceive.Name = "txtReceive";
-            this.txtReceive.Size = new System.Drawing.Size(292, 240);
-            this.txtReceive.TabIndex = 2;
+            this.txbRXHex.Location = new System.Drawing.Point(388, 19);
+            this.txbRXHex.Multiline = true;
+            this.txbRXHex.Name = "txbRXHex";
+            this.txbRXHex.Size = new System.Drawing.Size(292, 240);
+            this.txbRXHex.TabIndex = 2;
             // 
             // btnMeasure
             // 
@@ -104,7 +104,7 @@ namespace bleTest2
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(700, 360);
             this.Controls.Add(this.btnMeasure);
-            this.Controls.Add(this.txtReceive);
+            this.Controls.Add(this.txbRXHex);
             this.Controls.Add(this.listRec);
             this.Controls.Add(this.btnClear);
             this.Controls.Add(this.btnRst);
@@ -124,7 +124,7 @@ namespace bleTest2
         private System.Windows.Forms.Button btnRst;
         private System.Windows.Forms.ListBox listRec;
         private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.TextBox txtReceive;
+        private System.Windows.Forms.TextBox txbRXHex;
         private System.Windows.Forms.Button btnMeasure;
     }
 }
