@@ -63,36 +63,6 @@ namespace bleTest2
 
             // Start the watcher.
             deviceWatcher.Start();
-            /*while (true)
-            {
-                if (device == null)
-                {
-                    
-                    Thread.Sleep(500);
-                }
-                else
-                {
-                    Console.WriteLine("PRess Any to pair with Wahoo Ticker");
-                    Console.ReadKey();
-                    BluetoothLEDevice bluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(device.Id);
-                    Console.WriteLine("Attempting to pair with device");
-                    Console.WriteLine("장치 아이디 확인 : " + device.Id);
-                    GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync();
-
-                    if (result.Status == GattCommunicationStatus.Success)
-                    {
-                        Console.WriteLine("Pairing succeeded");
-                        var services = result.Services;
-                        foreach (var service in services)
-                        {
-                            Console.WriteLine(service.Uuid);
-                        }
-                    }
-                    Console.WriteLine("Press Any Key to Exit application");
-                    Console.ReadKey();
-                    break;
-                }
-            }*/
             /*deviceWatcher.Stop();*/
 
 
