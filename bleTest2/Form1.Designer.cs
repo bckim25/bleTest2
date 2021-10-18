@@ -35,6 +35,7 @@ namespace bleTest2
             this.btnClear = new System.Windows.Forms.Button();
             this.txbRXHex = new System.Windows.Forms.TextBox();
             this.btnMeasure = new System.Windows.Forms.Button();
+            this.btnClose = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnScan
@@ -98,11 +99,22 @@ namespace bleTest2
             this.btnMeasure.UseVisualStyleBackColor = true;
             this.btnMeasure.Click += new System.EventHandler(this.btnMeasure_Click);
             // 
+            // btnClose
+            // 
+            this.btnClose.Location = new System.Drawing.Point(433, 302);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(85, 24);
+            this.btnClose.TabIndex = 4;
+            this.btnClose.Text = "end";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(700, 360);
+            this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnMeasure);
             this.Controls.Add(this.txbRXHex);
             this.Controls.Add(this.listRec);
@@ -126,6 +138,7 @@ namespace bleTest2
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.TextBox txbRXHex;
         private System.Windows.Forms.Button btnMeasure;
+        private System.Windows.Forms.Button btnClose;
     }
 }
 

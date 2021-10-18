@@ -24,8 +24,9 @@ namespace bleTest2
         public delegate void update_rst();
 
         public Guid actUuid;
-        public GattCharacteristic actGattCharacteristic;
+        public static GattCharacteristic actGattCharacteristic;
 
+        
         public Form1()
         {
             InitializeComponent();
@@ -40,16 +41,29 @@ namespace bleTest2
             Main();
         }
 
+        
+
+
+        public static string[] requestedProperties = { "System.Devices.Aep.DeviceAddress", "System.Devices.Aep.IsConnected" };
+
+        public static DeviceWatcher deviceWatcher =
+                    DeviceInformation.CreateWatcher(
+                            BluetoothLEDevice.GetDeviceSelectorFromPairingState(false),
+                            requestedProperties,
+                            DeviceInformationKind.AssociationEndpoint);
+
         static async Task Main()
         {
             // Query for extra properties you want returned
-            string[] requestedProperties = { "System.Devices.Aep.DeviceAddress", "System.Devices.Aep.IsConnected" };
+/*            string[] requestedProperties = { "System.Devices.Aep.DeviceAddress", "System.Devices.Aep.IsConnected" };
 
             DeviceWatcher deviceWatcher =
                         DeviceInformation.CreateWatcher(
                                 BluetoothLEDevice.GetDeviceSelectorFromPairingState(false),
                                 requestedProperties,
-                                DeviceInformationKind.AssociationEndpoint);
+                                DeviceInformationKind.AssociationEndpoint);*/
+
+            DeviceWatcher deviceWatcherCopy = deviceWatcher;
 
             // Register event handlers before starting the watcher.
             // Added, Updated and Removed are required to get all nearby devices
@@ -64,7 +78,7 @@ namespace bleTest2
             // Start the watcher.
             deviceWatcher.Start();
             /*deviceWatcher.Stop();*/
-
+            
 
 
         }
@@ -81,6 +95,7 @@ namespace bleTest2
 
         private static void DeviceWatcher_Removed(DeviceWatcher sender, DeviceInformationUpdate args)
         {
+            Console.WriteLine("종료확인~~~~~~~~~~~~~~~~~~~~~~~~~");
             /*throw new NotImplementedException();*/
         }
 
@@ -109,6 +124,7 @@ namespace bleTest2
 
         private void btnRst_Click(object sender, EventArgs e)
         {
+
             listRec.DataSource = items;
             for(int i = 0; i < items.Count; i++)
             {
@@ -117,8 +133,10 @@ namespace bleTest2
             /*items.Clear();*/
         }
 
+        public GattCharacteristic characteristicTemp;
+        public BluetoothLEDevice bluetoothLeDeviceTemp;
+        public GattDeviceService serviceTemp;
 
- 
 
         private async void listRec_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -130,22 +148,26 @@ namespace bleTest2
             BluetoothLEDevice bluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(itm);
             GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync();
 
-            if(result.Status == GattCommunicationStatus.Success)
+            bluetoothLeDeviceTemp = bluetoothLeDevice;
+
+            if (result.Status == GattCommunicationStatus.Success)
             {
                 var services = result.Services;
                 
                 foreach(var service in services)
                 {
+                    serviceTemp = service;
+                    Console.WriteLine($"연결상태 확인 start : {service?.Session.SessionStatus}");
                     Console.WriteLine($"{service.Uuid}");
                     Console.WriteLine("→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→");
                     GattCharacteristicsResult cResult = await service.GetCharacteristicsAsync();
-
+                    
                     if (cResult.Status == GattCommunicationStatus.Success)
                     {
                         var characteristics = cResult.Characteristics;
                         foreach(var characteristic in characteristics)
                         {
-                            
+                            characteristicTemp = characteristic;
                             Console.WriteLine($"\t{characteristic.Uuid}");
 
                             GattCharacteristicProperties properties = characteristic.CharacteristicProperties;
@@ -197,8 +219,16 @@ namespace bleTest2
                             }
                         }
                     }
+
+                    service.Dispose();
                 }
                 MessageBox.Show("Pairing Success!!");
+                /*                bluetoothLeDevice.Dispose();
+                                bluetoothLeDevice = null;*/
+                bluetoothLeDevice.Dispose();
+                GC.Collect();
+
+
             }
             else
             {
@@ -297,6 +327,23 @@ namespace bleTest2
             }
 
 
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            /*            deviceWatcher.Stop();
+                        deviceWatcher.Removed -= DeviceWatcher_Removed;*/
+            //disconnect 테스트중
+            serviceTemp.Dispose();
+            
+
+            //characteristicTemp.ValueChanged -= Characteristic_ValueChanged;
+            bluetoothLeDeviceTemp.Dispose();
+
+            //bluetoothLeDeviceTemp = null;
+            GC.Collect();
+            Console.WriteLine($"연결상태 확인 btnClose : {serviceTemp?.Session.SessionStatus}");
+            //Console.WriteLine(characteristicTemp?.serviceTemp?.Session.SessionStatus);
         }
     }
 }
