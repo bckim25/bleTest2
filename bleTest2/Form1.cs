@@ -220,13 +220,13 @@ namespace bleTest2
                         }
                     }
 
-                    service.Dispose();
+                    //service.Dispose();
                 }
                 MessageBox.Show("Pairing Success!!");
                 /*                bluetoothLeDevice.Dispose();
                                 bluetoothLeDevice = null;*/
-                bluetoothLeDevice.Dispose();
-                GC.Collect();
+                /*bluetoothLeDevice.Dispose();
+                GC.Collect();*/
 
 
             }
@@ -331,19 +331,11 @@ namespace bleTest2
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            /*            deviceWatcher.Stop();
-                        deviceWatcher.Removed -= DeviceWatcher_Removed;*/
             //disconnect 테스트중
             serviceTemp.Dispose();
-            
-
-            //characteristicTemp.ValueChanged -= Characteristic_ValueChanged;
             bluetoothLeDeviceTemp.Dispose();
-
-            //bluetoothLeDeviceTemp = null;
             GC.Collect();
             Console.WriteLine($"연결상태 확인 btnClose : {serviceTemp?.Session.SessionStatus}");
-            //Console.WriteLine(characteristicTemp?.serviceTemp?.Session.SessionStatus);
         }
     }
 }
