@@ -332,10 +332,20 @@ namespace bleTest2
         private void btnClose_Click(object sender, EventArgs e)
         {
             //disconnect 테스트중
-            serviceTemp.Dispose();
-            bluetoothLeDeviceTemp.Dispose();
-            GC.Collect();
-            Console.WriteLine($"연결상태 확인 btnClose : {serviceTemp?.Session.SessionStatus}");
+            First:
+            if (bluetoothLeDeviceTemp != null)
+            {
+                serviceTemp.Dispose();
+                bluetoothLeDeviceTemp.Dispose();
+                GC.Collect();
+                string msg = serviceTemp?.Session.SessionStatus.ToString();
+                Console.WriteLine($"메세지 ==> {msg}");
+                Console.WriteLine($"연결상태 확인 btnClose : {serviceTemp?.Session.SessionStatus}");
+                if(msg == "Active")
+                {
+                    goto First;
+                }
+            }
         }
     }
 }
