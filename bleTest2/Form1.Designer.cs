@@ -36,6 +36,8 @@ namespace bleTest2
             this.txbRXHex = new System.Windows.Forms.TextBox();
             this.btnMeasure = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.btnMeasure2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnScan
@@ -109,11 +111,33 @@ namespace bleTest2
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(25, 348);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(116, 34);
+            this.button1.TabIndex = 5;
+            this.button1.Text = "AutoSet";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnMeasure2
+            // 
+            this.btnMeasure2.Location = new System.Drawing.Point(336, 354);
+            this.btnMeasure2.Name = "btnMeasure2";
+            this.btnMeasure2.Size = new System.Drawing.Size(75, 23);
+            this.btnMeasure2.TabIndex = 6;
+            this.btnMeasure2.Text = "measure";
+            this.btnMeasure2.UseVisualStyleBackColor = true;
+            this.btnMeasure2.Click += new System.EventHandler(this.btnMeasure2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(700, 360);
+            this.ClientSize = new System.Drawing.Size(700, 389);
+            this.Controls.Add(this.btnMeasure2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnMeasure);
             this.Controls.Add(this.txbRXHex);
@@ -124,6 +148,7 @@ namespace bleTest2
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -139,6 +164,8 @@ namespace bleTest2
         private System.Windows.Forms.TextBox txbRXHex;
         private System.Windows.Forms.Button btnMeasure;
         private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnMeasure2;
     }
 }
 

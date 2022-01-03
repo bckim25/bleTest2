@@ -26,7 +26,10 @@ namespace bleTest2
         public Guid actUuid;
         public static GattCharacteristic actGattCharacteristic;
 
-        
+        public string itemK = "BluetoothLE#BluetoothLEe8:48:b8:c8:20:00-e4:c8:55:e8:84:28";
+
+
+
         public Form1()
         {
             InitializeComponent();
@@ -39,6 +42,8 @@ namespace bleTest2
         private void btnScan_Click(object sender, EventArgs e)
         {
             Main();
+            
+            //btnRst_Click();
         }
 
         
@@ -133,17 +138,30 @@ namespace bleTest2
             /*items.Clear();*/
         }
 
+        private void btnRst_Click()
+        {
+            //listRec.DataSource = items;            
+            for (int i = 0; i < items.Count; i++)
+            {
+                Console.WriteLine($"아이템===> {items[i]}");
+                listRec.Items.Add(items[i]);
+                
+            }
+        }
+
+
+
         public GattCharacteristic characteristicTemp;
         public BluetoothLEDevice bluetoothLeDeviceTemp;
         public GattDeviceService serviceTemp;
 
-
         private async void listRec_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            /*Console.WriteLine($"데이터 : {listRec.SelectedIndex}");
-            Console.WriteLine($"데이터 : {listRec.SelectedItem}");*/
+            Console.WriteLine($"click 인덱스 ====> {listRec.SelectedIndex}");
+            Console.WriteLine($"click 아이템 ====> {listRec.SelectedItem}");
             int idx = listRec.SelectedIndex;
             string itm = listRec.SelectedItem.ToString();
+            Console.WriteLine($"★★★★★★ 아이템이름===> {itm}");
 
             BluetoothLEDevice bluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(itm);
             GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync();
@@ -237,7 +255,111 @@ namespace bleTest2
             }
 
         }
+        //----------------------------------------------------------------------------------------------
 
+        private async void AutoSet()
+        {
+            //Console.WriteLine($"click 인덱스 ====> {listRec.SelectedIndex}");
+            //Console.WriteLine($"click 아이템 ====> {listRec.SelectedItem}");
+            //int idx = listRec.SelectedIndex;
+            //string itm = listRec.SelectedItem.ToString();
+            //string itemK = "BluetoothLE#BluetoothLEe8:48:b8:c8:20:00-e4:c8:55:e8:84:28";            
+
+            BluetoothLEDevice bluetoothLeDevice = await BluetoothLEDevice.FromIdAsync(itemK);
+            GattDeviceServicesResult result = await bluetoothLeDevice.GetGattServicesAsync();
+
+            bluetoothLeDeviceTemp = bluetoothLeDevice;
+
+            if (result.Status == GattCommunicationStatus.Success)
+            {
+                var services = result.Services;
+
+                foreach (var service in services)
+                {
+                    serviceTemp = service;
+                    Console.WriteLine($"연결상태 확인 start : {service?.Session.SessionStatus}");
+                    Console.WriteLine($"{service.Uuid}");
+                    Console.WriteLine("→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→→");
+                    GattCharacteristicsResult cResult = await service.GetCharacteristicsAsync();
+
+                    if (cResult.Status == GattCommunicationStatus.Success)
+                    {
+                        var characteristics = cResult.Characteristics;
+                        foreach (var characteristic in characteristics)
+                        {
+                            characteristicTemp = characteristic;
+                            Console.WriteLine($"\t{characteristic.Uuid}");
+
+                            GattCharacteristicProperties properties = characteristic.CharacteristicProperties;
+                            if (properties.HasFlag(GattCharacteristicProperties.Notify))
+                            {
+                                Console.WriteLine("Notify property found");
+                                GattCommunicationStatus status = await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
+                                if (status == GattCommunicationStatus.Success)
+                                {
+                                    characteristic.ValueChanged += Characteristic_ValueChanged;
+                                    // Server has been informed of clients interest.
+                                }
+                            }
+                            else if (properties.HasFlag(GattCharacteristicProperties.Write))
+                            {
+
+
+                                var writer = new DataWriter();
+                                writer.WriteBytes(new byte[] { 0xCC });
+                                /*writer.WriteBytes(new byte[] { 10 });*/
+                                /*writer.WriteBytes(new byte[] { 0x4D, 0x4F, 0x52, 0x52 });*/
+                                /*writer.WriteBytes(new byte[] { 10 });*/
+                                Console.WriteLine($"\t\t [{characteristic.Uuid}] write property found!!");
+
+                                if (!string.IsNullOrWhiteSpace(characteristic.Uuid.ToString()))
+                                {
+                                    string[] str_split = characteristic.Uuid.ToString().Split(new char[] { '-' });
+                                    int len = str_split[0].Length;
+                                    string chkCode = str_split[0].Substring(len - 2, 2);
+
+                                    if (chkCode == "02")
+                                    {
+                                        GattCommunicationStatus statusWrite = await characteristic.WriteValueAsync(writer.DetachBuffer());
+                                        if (statusWrite == GattCommunicationStatus.Success)
+                                        {
+                                            // Successfully wrote to device
+                                            actGattCharacteristic = characteristic;
+                                            actUuid = characteristic.Uuid;
+                                            Console.WriteLine("Write !!!!!!");
+
+                                        }
+                                    }
+                                }
+
+                            }
+                            else if (properties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse))
+                            {
+                                Console.WriteLine($"\t\t [{characteristic.Uuid} ] WriteWithoutResponse property found");
+
+                            }
+                        }
+                    }
+
+                    //service.Dispose();
+                }
+                MessageBox.Show("Pairing Success!!");
+                /*                bluetoothLeDevice.Dispose();
+                                bluetoothLeDevice = null;*/
+                /*bluetoothLeDevice.Dispose();
+                GC.Collect();*/
+
+
+            }
+            else
+            {
+                MessageBox.Show("Pairing fail!!!");
+                Console.WriteLine("Pairing fail");
+            }
+
+        }
+
+        //---------------------------------------------------------------------------------------------
 
         private async void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
@@ -345,6 +467,53 @@ namespace bleTest2
                 {
                     goto First;
                 }
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            AutoSet();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            AutoSet();
+        }
+
+        private async void btnMeasure2_Click(object sender, EventArgs e)
+        {
+            //int idx = listRec.SelectedIndex;
+            //string itm = listRec.SelectedItem.ToString();
+
+            //Console.WriteLine($"idx : {idx} 아이템 : {itm} ");
+            GattCharacteristicProperties properties = actGattCharacteristic.CharacteristicProperties;
+            if (properties.HasFlag(GattCharacteristicProperties.Write))
+            {
+                // This characteristic supports writing to it.
+                var writer = new DataWriter();
+                writer.WriteBytes(new byte[] { 0x4D, 0x4F, 0x52, 0x52 });
+                /*writer.WriteBytes(new byte[] { 10 });*/
+                Console.WriteLine($"\t\t [{actGattCharacteristic.Uuid}] write22 property found!!");
+
+                if (!string.IsNullOrWhiteSpace(actGattCharacteristic.Uuid.ToString()))
+                {
+                    string[] str_split = actGattCharacteristic.Uuid.ToString().Split(new char[] { '-' });
+                    int len = str_split[0].Length;
+                    string chkCode = str_split[0].Substring(len - 2, 2);
+
+                    if (chkCode == "02")
+                    {
+                        GattCommunicationStatus statusWrite = await actGattCharacteristic.WriteValueAsync(writer.DetachBuffer());
+                        if (statusWrite == GattCommunicationStatus.Success)
+                        {
+                            // Successfully wrote to device                            
+                            Console.WriteLine("Write22 !!!!!!");
+
+                        }
+                    }
+                }
+
+
             }
         }
     }
