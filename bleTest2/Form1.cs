@@ -240,11 +240,8 @@ namespace bleTest2
 
                     //service.Dispose();
                 }
-                MessageBox.Show("Pairing Success!!");
-                /*                bluetoothLeDevice.Dispose();
-                                bluetoothLeDevice = null;*/
-                /*bluetoothLeDevice.Dispose();
-                GC.Collect();*/
+                
+
 
 
             }
@@ -472,7 +469,7 @@ namespace bleTest2
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            //AutoSet();
+            AutoSet();
         }
 
         private void button1_Click(object sender, EventArgs e)
