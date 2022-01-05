@@ -13,6 +13,7 @@ using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
 using System.Windows.Threading;
 using Windows.Storage.Streams;
+using DevExpress.XtraEditors;
 
 namespace bleTest2
 {
@@ -240,7 +241,7 @@ namespace bleTest2
 
                     //service.Dispose();
                 }
-                
+
 
 
 
@@ -340,7 +341,12 @@ namespace bleTest2
 
                     //service.Dispose();
                 }
-                MessageBox.Show("Pairing Success!!");
+                XtraMessageBoxArgs args = new XtraMessageBoxArgs();
+                args.AutoCloseOptions.Delay = 2000;
+                args.Caption = "연결완료";
+                args.Text = "연결되었습니다..";
+                args.Buttons = new DialogResult[] { DialogResult.OK };
+                XtraMessageBox.Show(args).ToString();
                 /*                bluetoothLeDevice.Dispose();
                                 bluetoothLeDevice = null;*/
                 /*bluetoothLeDevice.Dispose();
