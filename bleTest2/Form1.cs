@@ -447,9 +447,12 @@ namespace bleTest2
                         }
                     }
                 }
-            }
-        }
 
+
+            }
+
+
+        }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
@@ -472,7 +475,7 @@ namespace bleTest2
             XtraMessageBoxArgs args = new XtraMessageBoxArgs();
             args.AutoCloseOptions.Delay = 2000;
             args.Caption = "페어링종료";
-            args.Text = "종료되었습니다..";
+            args.Text = "연결되었습니다..";
             args.Buttons = new DialogResult[] { DialogResult.OK };
             XtraMessageBox.Show(args).ToString();
 
