@@ -27,7 +27,7 @@ namespace bleTest2
         public Guid actUuid;
         public static GattCharacteristic actGattCharacteristic;
 
-        public string itemK = "BluetoothLE#BluetoothLEe8:48:b8:c8:20:00-e4:c8:55:e8:84:28";
+        public string itemK = "BluetoothLE#BluetoothLE00:e0:4c:23:99:87-d5:43:22:33:d9:d0";
 
 
 
@@ -475,7 +475,7 @@ namespace bleTest2
             XtraMessageBoxArgs args = new XtraMessageBoxArgs();
             args.AutoCloseOptions.Delay = 2000;
             args.Caption = "페어링종료";
-            args.Text = "연결되었습니다..";
+            args.Text = "종료되었습니다..";
             args.Buttons = new DialogResult[] { DialogResult.OK };
             XtraMessageBox.Show(args).ToString();
 
