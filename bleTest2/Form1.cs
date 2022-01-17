@@ -113,8 +113,6 @@ namespace bleTest2
         private static void DeviceWatcher_Added(DeviceWatcher sender, DeviceInformation args)
         {
             update_rst my_update_rst;
-
-
             if (args.Name == "Nugawinder")
             {
                 Console.WriteLine("장치 명 : " + args.Name);
