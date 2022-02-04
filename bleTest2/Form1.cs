@@ -27,7 +27,7 @@ namespace bleTest2
         public Guid actUuid;
         public static GattCharacteristic actGattCharacteristic;
 
-        public string itemK = "BluetoothLE#BluetoothLEe8:48:b8:c8:20:00-e4:c8:55:e8:84:28";
+        public string itemK = "BluetoothLE#BluetoothLE00:e0:4c:23:99:87-e5:fd:c0:21:39:96";
 
 
 
@@ -130,7 +130,9 @@ namespace bleTest2
         {
 
             listRec.DataSource = items;
-            for(int i = 0; i < items.Count; i++)
+            deviceWatcher.Stop();
+
+            for (int i = 0; i < items.Count; i++)
             {
                 /*listRec.Items = items[i];*/
             }
@@ -398,8 +400,10 @@ namespace bleTest2
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            listRec.DataSource = null;
-            listRec.Items.Clear();
+            //listRec.DataSource = null;
+            //listRec.Items.Clear();
+
+            txbRXHex.Clear();
         }
 
         public string ToHex(int i)
