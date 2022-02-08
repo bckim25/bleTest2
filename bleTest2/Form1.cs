@@ -156,7 +156,68 @@ namespace bleTest2
             }
         }
 
+        Thread _thread = null;
+        bool _bThreadStop = false;
+        int endCnt = 0;
+        int attindex = 0;
 
+        public void fThreadStart()
+        {
+            _thread = new Thread(new ThreadStart(Run));
+            _thread.Start();
+        }
+
+        private void Run()
+        {
+            try
+            {
+                while (endCnt < 5 && !_bThreadStop)
+                {
+                    if (this.InvokeRequired)
+                    {
+                        this.Invoke(new Action(delegate ()
+                        {
+                            lbCount.Text = endCnt.ToString();
+                            this.Refresh();
+                            ++endCnt;
+                        }));
+                        Thread.Sleep(1000);
+                    }
+                }
+            }
+            catch (ThreadInterruptedException exInterrupt)
+            {
+                exInterrupt.ToString();
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+            }
+        }
+
+        public void ThreadAbort()
+        {
+            if (_thread.IsAlive)   // Thread가 동작 중 일 경우 
+            {
+                _thread.Abort();  // Thred를 강제 종료
+            }
+        }
+
+        public void ThreadJoin()
+        {
+            if (_thread.IsAlive)
+            {
+                bool bThreadEnd = _thread.Join(3000);
+            }
+        }
+
+        public void ThreadInterrupt()
+        {
+            if (_thread.IsAlive)
+            {
+                _thread.Interrupt();
+            }
+        }
 
         public GattCharacteristic characteristicTemp;
         public BluetoothLEDevice bluetoothLeDeviceTemp;
@@ -381,11 +442,31 @@ namespace bleTest2
             {
                 string hex = BitConverter.ToString(buff).Replace("-", " ") + " ";
                 Console.WriteLine(string.Format("hex code : {0}", hex));
-                log.WriteLine($"hex code : {hex}");
+                //log.WriteLine($"hex code : {hex}");
                 
             });
             await readTask;
             setText(BitConverter.ToString(buff).Replace("-", " ") + " ");
+
+
+            if (buff.Length == 5)
+            {
+                if (this.InvokeRequired)
+                {
+                    this.Invoke(new Action(delegate ()
+                    {
+                        btnMeasure.PerformClick();
+                    }));
+                }
+
+            }
+            else if (buff.Length == 4)
+            {
+
+            }else if (buff.Length == 12)
+            {
+
+            }
 
         }
 

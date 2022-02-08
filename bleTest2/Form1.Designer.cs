@@ -38,6 +38,7 @@ namespace bleTest2
             this.btnClose = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.btnMeasure2 = new System.Windows.Forms.Button();
+            this.lbCount = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnScan
@@ -131,11 +132,21 @@ namespace bleTest2
             this.btnMeasure2.UseVisualStyleBackColor = true;
             this.btnMeasure2.Click += new System.EventHandler(this.btnMeasure2_Click);
             // 
+            // lbCount
+            // 
+            this.lbCount.AutoSize = true;
+            this.lbCount.Location = new System.Drawing.Point(475, 345);
+            this.lbCount.Name = "lbCount";
+            this.lbCount.Size = new System.Drawing.Size(11, 12);
+            this.lbCount.TabIndex = 7;
+            this.lbCount.Text = "0";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(700, 389);
+            this.Controls.Add(this.lbCount);
             this.Controls.Add(this.btnMeasure2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnClose);
@@ -166,6 +177,7 @@ namespace bleTest2
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btnMeasure2;
+        private System.Windows.Forms.Label lbCount;
     }
 }
 
