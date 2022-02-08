@@ -14,11 +14,17 @@ using Windows.Devices.Enumeration;
 using System.Windows.Threading;
 using Windows.Storage.Streams;
 using DevExpress.XtraEditors;
+using BlueCrow.Tools;
 
 namespace bleTest2
 {
     public partial class Form1 : Form
     {
+
+        private static LogManager sqlLog = new LogManager(null, "_sqlLog");
+        private static LogManager log = new LogManager(null, "_log");
+        private static LogManager systemLog = new LogManager(null, "_systemLog");
+
         static DeviceInformation device = null;
         static public List<string> items = new List<string>();
 
@@ -375,6 +381,8 @@ namespace bleTest2
             {
                 string hex = BitConverter.ToString(buff).Replace("-", " ") + " ";
                 Console.WriteLine(string.Format("hex code : {0}", hex));
+                log.WriteLine($"hex code : {hex}");
+                
             });
             await readTask;
             setText(BitConverter.ToString(buff).Replace("-", " ") + " ");
