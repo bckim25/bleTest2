@@ -21,9 +21,9 @@ namespace bleTest2
     public partial class Form1 : Form
     {
 
-        private static LogManager sqlLog = new LogManager(null, "_sqlLog");
+/*        private static LogManager sqlLog = new LogManager(null, "_sqlLog");
         private static LogManager log = new LogManager(null, "_log");
-        private static LogManager systemLog = new LogManager(null, "_systemLog");
+        private static LogManager systemLog = new LogManager(null, "_systemLog");*/
 
         static DeviceInformation device = null;
         static public List<string> items = new List<string>();
