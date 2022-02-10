@@ -14,16 +14,21 @@ using Windows.Devices.Enumeration;
 using System.Windows.Threading;
 using Windows.Storage.Streams;
 using DevExpress.XtraEditors;
-using BlueCrow.Tools;
+//using BlueCrow.Tools;
+using log4net;
+using log4net.Config;
+using System.IO;
 
+[assembly:log4net.Config.XmlConfigurator(Watch =true)]
 namespace bleTest2
 {
     public partial class Form1 : Form
     {
 
-/*        private static LogManager sqlLog = new LogManager(null, "_sqlLog");
-        private static LogManager log = new LogManager(null, "_log");
-        private static LogManager systemLog = new LogManager(null, "_systemLog");*/
+        //private static LogManager sqlLog = new LogManager(null, "_sqlLog");
+        //private static LogManager log = new LogManager(null, "_log");
+        //private static LogManager systemLog = new LogManager(null, "_systemLog");
+        private static readonly log4net.ILog log = log4net.LogManager.GetLogger(typeof(Form1));
 
         static DeviceInformation device = null;
         static public List<string> items = new List<string>();
@@ -40,7 +45,7 @@ namespace bleTest2
         public Form1()
         {
             InitializeComponent();
-            
+            XmlConfigurator.Configure(new FileInfo("log4net.xml"));
         }
 
 
@@ -392,7 +397,6 @@ namespace bleTest2
                                             actGattCharacteristic = characteristic;
                                             actUuid = characteristic.Uuid;
                                             Console.WriteLine("Write !!!!!!");
-
                                         }
                                     }
                                 }
@@ -401,11 +405,9 @@ namespace bleTest2
                             else if (properties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse))
                             {
                                 Console.WriteLine($"\t\t [{characteristic.Uuid} ] WriteWithoutResponse property found");
-
                             }
                         }
                     }
-
                     //service.Dispose();
                 }
                 XtraMessageBoxArgs args = new XtraMessageBoxArgs();
@@ -426,7 +428,6 @@ namespace bleTest2
                 MessageBox.Show("Pairing fail!!!");
                 Console.WriteLine("Pairing fail");
             }
-
         }
 
         //---------------------------------------------------------------------------------------------
@@ -437,12 +438,14 @@ namespace bleTest2
             byte[] buff = new byte[reader.UnconsumedBufferLength];
             reader.ReadBytes(buff);
             Console.WriteLine($"byte size : {buff.Length}");
+            //log.WriteLine($"byte size : {buff.Length}");
+            log.Info($"byte size : {buff.Length}");
 
             var readTask = Task.Run(() =>
             {
                 string hex = BitConverter.ToString(buff).Replace("-", " ") + " ";
                 Console.WriteLine(string.Format("hex code : {0}", hex));
-                //log.WriteLine($"hex code : {hex}");
+                log.Info($"hex code : {hex}");
                 
             });
             await readTask;
@@ -572,6 +575,8 @@ namespace bleTest2
         private void Form1_Load(object sender, EventArgs e)
         {
             //AutoSet();
+            //XmlConfigurator.Configure(new System.IO.FileInfo("App.config"));
+            //ILog log = LogManager.GetLogger(typeof(Form1));
         }
 
         private void button1_Click(object sender, EventArgs e)
