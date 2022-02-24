@@ -438,13 +438,13 @@ namespace bleTest2
             byte[] buff = new byte[reader.UnconsumedBufferLength];
             reader.ReadBytes(buff);
             Console.WriteLine($"byte size : {buff.Length}");
-            log.WriteLine($"byte size : {buff.Length}");
+            //log.WriteLine($"byte size : {buff.Length}");
 
             var readTask = Task.Run(() =>
             {
                 string hex = BitConverter.ToString(buff).Replace("-", " ") + " ";
                 Console.WriteLine(string.Format("hex code : {0}", hex));
-                log.WriteLine($"hex code : {hex}");
+                //log.WriteLine($"hex code : {hex}");
                 
             });
             await readTask;
